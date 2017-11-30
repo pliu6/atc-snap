@@ -1,0 +1,28 @@
+name: augmented-traffic-control
+version: 0.1
+summary: Augmented traffic control
+description: |
+  Based on Facebook's augmented traffic control
+
+grade: devel
+confinement: devmode
+
+parts:
+  atcui:
+    source: src
+    plugin: python
+    python-version: python2
+    stage-packages:
+      - iptables
+
+  dbfile:
+    plugin: dump
+    source: src/atcui/db
+
+apps:
+  atcd:
+    command: atcd --sqlite-file=$SNAP_DATA/atcd.db --atcd-wan eth0 --atcd-lan eth1
+    daemon: simple
+  atcui:
+    command: atcui runserver 0.0.0.0:8000
+    daemon: simple
